@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  body{
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+  }
+  input{
+    width: 800px;
+    height: 40px;
+    border-radius: 9px;
+  }
+  button{
+    width: 130px;
+    height: 45px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 9px;
+  }
+  .container{
+    display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+  }
+</style>
+<body>
+
+    <h1>What do you want to watch?</h1>
+    <div class="inpt">
+      <input type="text" placeholder="Search anime...">
+      <button class="button">Start</button>
+      <button class="search">Search</button>
+    </div>
+    <div class="container">
+
+    </div>
+</body>
+<script>
+  const input = document.querySelector("input");
+  const btn = document.querySelector(".button");
+  const container = document.querySelector(".container");
+  const search = document.querySelector(".search");
+
+  btn.addEventListener("click", async function(){
+    const URL = "https://api.jikan.moe/v4/anime";
+    const promise = await fetch(URL);
+    const data = await promise.json();
+    console.log(data);
+
+    for(let i = 0; i < data.data.length; i++){
+      container.innerHTML +=`
+      <div class="card">
+        <img src="${data.data[i].images.webp.image_url}" alt="">
+        <p>${data.data[i].title}</p>
+      </div>
+      `;
+    };
+  });
+
+  search.addEventListener("click", async function(){
+    container.innerHTML = "";
+    const query = input.value;
+    const URL = `https://api.jikan.moe/v4/anime?q=${query}&limit=1`;
+    const promise = await fetch(URL);
+    const data = await promise.json();
+
+    const anime = data.data[0];
+    container.innerHTML = `
+    <div class="card" style="width:300px;">
+        <img src="${anime.images.webp.image_url}" alt="">
+        <p>${anime.title}</p>
+      </div>
+    `;
+  })
+</script>
+</html>
